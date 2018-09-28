@@ -27,6 +27,12 @@ export class SearchResultsComponent {
   sub: Subscription = null;
   searching: boolean = false;
 
+  // pagination variables
+  page: number = 0;
+  pageEnd: number = 0;
+  pageSize: number = 24; // default size, change for mobile
+  
+
   constructor (private rs: RequestService) {}
 
   ngOnChanges() {
@@ -83,5 +89,7 @@ export class SearchResultsComponent {
     this.shown = nIndex;
     // Set searching to false
     this.searching = false;
+    // pagination: increment furthest page to load
+    this.pageEnd = this.pageEnd + 1;
   }
 }

@@ -24,6 +24,9 @@ export class SuperSearchComponent implements OnInit {
     selectables: any = SelectFields;
     searchables: any = SearchableFields;
 
+    // pagination variables
+    pageCriteria: string[][] = [];
+
     private subscription: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute, private location: Location) {}
@@ -32,7 +35,11 @@ export class SuperSearchComponent implements OnInit {
         this.activatedRoute.queryParamMap.subscribe( params => {
           this.criteria = [];
           for (let key of params.keys) {
-            this.criteria.push([key, params.get(key)]);
+            if (key == 'page' || key == 'pageEnd' || key == 'pageSize') {
+                this.pageCriteria.push([key, params.get(key)]);
+            } else {
+                this.criteria.push([key, params.get(key)]);
+            }
           }
           if (this.criteria.length == 0) {
             this.criteria.push(['full_name', '']);
@@ -44,7 +51,7 @@ export class SuperSearchComponent implements OnInit {
 
     updateQuery() {
         let tempstring = '';
-        for(let value of this.criteria) {
+        for(let value of this.criteria.concat(this.pageCriteria)) {
             if(value[0] !== 'year' && value[1] != ''){
                 tempstring += value[0] + "=" + value[1] + "&";
             }

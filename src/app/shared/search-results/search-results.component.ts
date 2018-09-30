@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Observable } from 'rxjs/Observable';
@@ -30,8 +30,11 @@ export class SearchResultsComponent {
   // pagination variables
   page: number = 0;
   pageEnd: number = 0;
-  pageSize: number = 24; // default size, change for mobile
-  
+  pageSize: number = 24; // default size, TODO: change for mobile
+  // https://www.themarketingtechnologist.co/building-nested-components-in-angular-2/
+  @Output() notifyPage: EventEmitter<number> = new EventEmitter<number>();
+  @Output() notifyPageEnd: EventEmitter<number> = new EventEmitter<number>();
+  @Output() notifyPageSize: EventEmitter<number> = new EventEmitter<number>();
 
   constructor (private rs: RequestService) {}
 
@@ -91,5 +94,9 @@ export class SearchResultsComponent {
     this.searching = false;
     // pagination: increment furthest page to load
     this.pageEnd = this.pageEnd + 1;
+    // notify parent of changes to pagination variables
+    this.notifyPage.emit(this.page);
+    this.notifyPageEnd.emit(this.pageEnd);
+    this.notifyPageSize.emit(this.pageSize);
   }
 }
